@@ -1,0 +1,16 @@
+[
+  {"category": "functional", "description": "房间系统 - 创建/加入房间", "steps": ["创建房间管理器", "生成唯一房间ID", "玩家加入房间", "房间列表显示"], "passes": false},
+  {"category": "functional", "description": "玩家管理 - 昵称、积分、状态", "steps": ["玩家类定义", "积分初始化100", "状态管理(闷/看牌/弃牌)"], "passes": false},
+  {"category": "functional", "description": "发牌系统 - 标准52张牌分发", "steps": ["创建52张牌组", "洗牌算法", "每人发3张"], "passes": false},
+  {"category": "functional", "description": "看牌功能 - 查看自己手牌", "steps": ["标记已看牌", "返回手牌信息", "前端显示手牌"], "passes": false},
+  {"category": "functional", "description": "闷牌功能 - 投入1/2/4积分", "steps": ["选择1/2/4档位", "扣除积分", "计入总池", "设置底注(首个玩家)"], "passes": false},
+  {"category": "functional", "description": "跟牌功能(看牌后) - 2X底注", "steps": ["检查已看牌", "计算2X底注", "扣除积分", "计入总池"], "passes": false},
+  {"category": "functional", "description": "弃牌功能 - 放弃本局", "steps": ["标记弃牌状态", "本局无法操作", "积分不返还"], "passes": false},
+  {"category": "functional", "description": "开牌功能 - 比牌决胜负", "steps": ["选择对手", "计算开牌费用", "比较牌型大小", "输家弃牌"], "passes": false},
+  {"category": "functional", "description": "牌型判断 - 炸金花规则", "steps": ["豹子判断", "同花顺判断", "同花判断", "顺子判断", "对子判断", "单张判断"], "passes": false},
+  {"category": "functional", "description": "积分结算 - 胜者获得池积分", "steps": ["检测游戏结束条件", "计算赢家", "积分池归赢家", "清零积分池"], "passes": false},
+  {"category": "functional", "description": "实时同步 - WebSocket广播", "steps": ["状态变化广播", "玩家操作同步", "游戏事件推送"], "passes": false},
+  {"category": "style", "description": "页面布局 - 玩家/池/底注显示", "steps": ["顶部信息栏", "玩家卡片区域", "积分池居中", "底注右侧显示"], "passes": false},
+  {"category": "style", "description": "手牌渲染 - 正面/背面显示", "steps": ["背面显示(未看牌)", "正面显示(已看牌)", "扑克牌样式"], "passes": false},
+  {"category": "functional", "description": "回合管理 - 轮流操作", "steps": ["当前玩家标记", "操作权限控制", "轮转下一玩家"], "passes": false}
+]
