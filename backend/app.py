@@ -257,13 +257,14 @@ def on_blind_bet(data):
 def on_follow(data):
     """跟牌(看牌后)"""
     player_id = data.get('player_id') or request.sid
+    amount = data.get('amount')  # 可选，底注为0时需要指定
 
     room = room_manager.get_player_room(player_id)
     if not room:
         emit('error', {'message': '未在任何房间'})
         return
 
-    result = room.game.action_follow(player_id)
+    result = room.game.action_follow(player_id, amount)
 
     if result['success']:
         game_state = room.game.get_game_state()
@@ -271,7 +272,8 @@ def on_follow(data):
             'game_state': game_state,
             'last_action': {
                 'player_id': player_id,
-                'action': 'follow'
+                'action': 'follow',
+                'amount': result.get('base_bet', game_state['base_bet'])
             }
         }, room=room.id)
     else:

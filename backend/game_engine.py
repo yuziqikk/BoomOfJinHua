@@ -314,8 +314,11 @@ class GameEngine:
             "cards": cards_to_dict(player.cards)
         }
 
-    def action_follow(self, player_id: str) -> Dict:
-        """跟牌(看牌后) - 投入2X底注"""
+    def action_follow(self, player_id: str, amount: int = None) -> Dict:
+        """
+        跟牌(看牌后) - 投入2X底注
+        如果底注为0，需要指定amount设置底注
+        """
         player = self.players.get(player_id)
         if not player:
             return {"success": False, "message": "玩家不存在"}
@@ -326,9 +329,36 @@ class GameEngine:
         if player.state == PlayerState.FOLDED:
             return {"success": False, "message": "已弃牌"}
 
+        # 如果底注为0，需要设置底注
         if self.base_bet == 0:
-            return {"success": False, "message": "尚无底注"}
+            if amount is None:
+                return {"success": False, "message": "请选择下注金额"}
+            if amount not in [1, 2, 4]:
+                return {"success": False, "message": "下注金额必须为1、2或4"}
+            if player.points < amount:
+                return {"success": False, "message": f"积分不足，需要{amount}积分"}
 
+            player.points -= amount
+            player.current_bet += amount
+            self.pot += amount
+            self.base_bet = amount
+            self.base_bet_player = player_id
+
+            logger.info(f"玩家 {player.nickname} 下注 {amount}, 底注={self.base_bet}, 积分池={self.pot}")
+
+            self.add_history("follow", player_id, {"amount": amount, "pot": self.pot})
+
+            next_pid = self.next_player()
+
+            return {
+                "success": True,
+                "message": f"下注{amount}积分",
+                "pot": self.pot,
+                "base_bet": self.base_bet,
+                "next_player": next_pid
+            }
+
+        # 正常跟牌（底注已存在）
         amount = self.base_bet * 2
 
         if player.points < amount:

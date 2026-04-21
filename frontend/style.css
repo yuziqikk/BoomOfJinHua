@@ -531,6 +531,14 @@ body {
     align-items: center;
 }
 
+/* 下注选项 */
+.bet-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
 /* 弹窗 */
 .modal {
     position: fixed;

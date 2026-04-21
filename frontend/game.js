@@ -457,11 +457,17 @@ function updateActionButtons() {
     lookBtn.classList.toggle('hidden', hasLooked);
     lookBtn.disabled = isFolded; // 只有弃牌时才禁用
 
-    // 跟牌按钮 (已看牌时显示)，显示具体金额
+    // 跟牌按钮 (已看牌时显示)
     followBtn.classList.toggle('hidden', !hasLooked);
     followBtn.disabled = disabled;
-    if (currentBaseBet > 0) {
+
+    // 如果已看牌但底注为0，显示下注选项
+    if (hasLooked && currentBaseBet === 0) {
+        followBtn.textContent = '下注';
+        followBtn.onclick = () => showBetOptions();
+    } else if (currentBaseBet > 0) {
         followBtn.textContent = `跟牌(${currentBaseBet * 2})`;
+        followBtn.onclick = () => handleAction('follow');
     } else {
         followBtn.textContent = '跟牌';
     }
@@ -472,6 +478,45 @@ function updateActionButtons() {
     // 开牌按钮
     compareBtn.classList.remove('hidden');
     compareBtn.disabled = disabled;
+}
+
+function showBetOptions() {
+    // 显示下注选项弹窗（已看牌但底注为0时）
+    let modal = document.getElementById('bet-options-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'bet-options-modal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>选择下注金额</h3>
+            <div class="bet-options">
+                <button class="btn btn-action" onclick="doBet(1)">下注 1</button>
+                <button class="btn btn-action" onclick="doBet(2)">下注 2</button>
+                <button class="btn btn-action" onclick="doBet(4)">下注 4</button>
+            </div>
+            <button class="btn btn-secondary" onclick="closeBetOptions()" style="margin-top: 15px;">取消</button>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+function doBet(amount) {
+    closeBetOptions();
+    socket.emit('follow', {
+        player_id: playerId,
+        amount: amount
+    });
+}
+
+function closeBetOptions() {
+    const modal = document.getElementById('bet-options-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
 }
 
 function handleAction(action, data = {}) {
