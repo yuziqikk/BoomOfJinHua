@@ -792,6 +792,53 @@ body {
     z-index: 100;
 }
 
+/* 音乐按钮 */
+.btn-music {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.btn-music:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+.btn-music.muted {
+    opacity: 0.5;
+}
+
+.btn-music.muted .music-icon::after {
+    content: '🔇';
+    position: absolute;
+}
+
+.music-icon {
+    position: relative;
+}
+
+.btn-music.playing .music-icon {
+    animation: musicPulse 1s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
 .history-header {
     display: flex;
     justify-content: space-between;

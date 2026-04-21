@@ -1,5 +1,5 @@
 /**
- * 炸金花游戏前端逻辑
+ * 金花对决游戏前端逻辑
  */
 
 // 游戏状态
@@ -11,6 +11,7 @@ let myCards = [];
 let hasLooked = false;
 let isMyTurn = false;
 let gameHistory = []; // 历史记录
+let isMusicPlaying = false; // 音乐状态
 
 // DOM元素
 const screens = {
@@ -18,6 +19,70 @@ const screens = {
     waiting: document.getElementById('waiting-screen'),
     game: document.getElementById('game-screen')
 };
+
+// ==================== 音乐控制 ====================
+
+function initMusic() {
+    const bgMusic = document.getElementById('bg-music');
+    const btnMusic = document.getElementById('btn-music');
+
+    if (!bgMusic || !btnMusic) return;
+
+    // 设置音量
+    bgMusic.volume = 0.3;
+
+    // 点击按钮切换音乐
+    btnMusic.addEventListener('click', toggleMusic);
+
+    // 尝试自动播放（可能被浏览器阻止）
+    bgMusic.play().then(() => {
+        isMusicPlaying = true;
+        btnMusic.classList.add('playing');
+        btnMusic.classList.remove('muted');
+    }).catch(() => {
+        // 自动播放被阻止，显示静音状态
+        isMusicPlaying = false;
+        btnMusic.classList.remove('playing');
+        btnMusic.classList.add('muted');
+    });
+}
+
+function toggleMusic() {
+    const bgMusic = document.getElementById('bg-music');
+    const btnMusic = document.getElementById('btn-music');
+
+    if (!bgMusic || !btnMusic) return;
+
+    if (isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+        btnMusic.classList.remove('playing');
+        btnMusic.classList.add('muted');
+    } else {
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+            btnMusic.classList.add('playing');
+            btnMusic.classList.remove('muted');
+        }).catch(e => {
+            console.log('播放失败:', e);
+        });
+    }
+}
+
+function stopMusic() {
+    const bgMusic = document.getElementById('bg-music');
+    const btnMusic = document.getElementById('btn-music');
+
+    if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+    }
+    if (btnMusic) {
+        btnMusic.classList.remove('playing');
+        btnMusic.classList.add('muted');
+    }
+    isMusicPlaying = false;
+}
 
 // ==================== 工具函数 ====================
 
@@ -148,6 +213,9 @@ function connectSocket() {
         // 关闭所有弹窗
         closeAllModals();
         document.getElementById('game-over-modal').classList.add('hidden');
+
+        // 初始化并播放背景音乐
+        initMusic();
 
         gameState = data.game_state;
         myCards = data.your_cards || [];
